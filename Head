@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autoscroll</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Notion Autoscroll</h2>
+    
+    <button onclick="startScroll()">Start</button>
+    <button onclick="stopScroll()">Stop</button>
+    
+    <label for="speed">Speed:</label>
+    <select id="speed" onchange="updateSpeed()">
+        <option value="50">Slow</option>
+        <option value="30" selected>Medium</option>
+        <option value="10">Fast</option>
+    </select>
+
+    <script>
+        let scrollInterval;
+        let speed = 30;
+
+        function startScroll() {
+            stopScroll();
+            scrollInterval = setInterval(() => {
+                window.scrollBy(0, 1);
+            }, speed);
+        }
+
+        function stopScroll() {
+            clearInterval(scrollInterval);
+        }
+
+        function updateSpeed() {
+            speed = document.getElementById("speed").value;
+            startScroll(); // Restart with new speed
+        }
+    </script>
+
+</body>
+</html>
