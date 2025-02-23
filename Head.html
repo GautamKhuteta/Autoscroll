@@ -3,59 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Autoscroll</title>
+    <title>Notion Autoscroll</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
         }
-        button {
-            margin: 5px;
-            padding: 10px 20px;
+
+        /* Floating Button */
+        .autoscroll-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .autoscroll-btn {
+            background: #222;
+            color: white;
+            border: none;
             font-size: 16px;
+            font-weight: bold;
+            padding: 10px 15px;
+            border-radius: 50px;
             cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            user-select: none;
         }
-        select {
-            padding: 10px;
-            font-size: 16px;
+
+        .speed-btn {
+            background: #333;
+            color: white;
+            border: none;
+            font-size: 18px;
+            padding: 8px 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none; /* Initially hidden */
+            transition: background 0.2s;
         }
+
+        .speed-btn:hover {
+            background: #555;
+        }
+
+        .expanded .speed-btn {
+            display: inline-block; /* Show when expanded */
+        }
+
     </style>
 </head>
 <body>
 
-    <h2>Notion Autoscroll</h2>
-    
-    <button onclick="startScroll()">Start</button>
-    <button onclick="stopScroll()">Stop</button>
-    
-    <label for="speed">Speed:</label>
-    <select id="speed" onchange="updateSpeed()">
-        <option value="50">Slow</option>
-        <option value="30" selected>Medium</option>
-        <option value="10">Fast</option>
-    </select>
+    <div class="autoscroll-container">
+        <button class="speed-btn" onclick="changeSpeed(-5)">-</button>
+        <button class="autoscroll-btn" onclick="toggleScroll()">
+            <span class="play-icon">▶</span>
+            <span class="button-text">Autoscroll</span>
+        </button>
+        <button class="speed-btn" onclick="changeSpeed(5)">+</button>
+    </div>
 
     <script>
         let scrollInterval;
-        let speed = 30;
+        let isScrolling = false;
+        let speed = 30; // Default speed in ms
+        const autoscrollBtn = document.querySelector(".autoscroll-btn");
+        const buttonText = document.querySelector(".button-text");
+        const playIcon = document.querySelector(".play-icon");
+        const container = document.querySelector(".autoscroll-container");
+
+        function toggleScroll() {
+            if (isScrolling) {
+                stopScroll();
+            } else {
+                startScroll();
+            }
+            container.classList.toggle("expanded"); // Show/hide speed buttons
+        }
 
         function startScroll() {
-            stopScroll();
+            isScrolling = true;
+            playIcon.textContent = "⏸"; // Change to pause icon
+            buttonText.textContent = speed; // Show speed instead of "Autoscroll"
             scrollInterval = setInterval(() => {
                 window.scrollBy(0, 1);
             }, speed);
         }
 
         function stopScroll() {
+            isScrolling = false;
+            playIcon.textContent = "▶"; // Change to play icon
+            buttonText.textContent = "Autoscroll"; // Revert text
             clearInterval(scrollInterval);
         }
 
-        function updateSpeed() {
-            speed = document.getElementById("speed").value;
-            startScroll(); // Restart with new speed
+        function changeSpeed(value) {
+            speed = Math.max(5, speed + value); // Min speed limit
+            buttonText.textContent = speed;
+            if (isScrolling) {
+                startScroll(); // Restart with new speed
+            }
         }
     </script>
 
 </body>
 </html>
+
